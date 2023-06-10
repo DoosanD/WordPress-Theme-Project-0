@@ -1,1 +1,1 @@
-This is front page
+This is front page!
