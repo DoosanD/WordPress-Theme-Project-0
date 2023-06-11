@@ -1,1 +1,10 @@
-This is front page!
+<?php get_header(); ?>
+
+
+
+
+
+
+
+
+<?php get_footer(); ?>
