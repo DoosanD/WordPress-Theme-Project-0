@@ -64,3 +64,36 @@ function my_sidebars()
     ));
 }
 add_action('widgets_init', 'my_sidebars');
+
+
+function my_first_post_type()
+{
+    $args = array(
+        'labels' => array(
+            'name' => 'Cars',
+            'singular_name' => 'Car',
+        ),
+        'hierarchical' => true,
+        'public' => true,
+        'menu_icon' => 'dashicons-images-alt2',
+        'has_archive' => true,
+        'supports' => array('title', 'editor', 'thumbnail'),
+        //'rewrite' => array('slug'=> 'cars'),
+    );
+    register_post_type('cars', $args);
+}
+add_action('init', 'my_first_post_type');
+
+function my_first_taxonomy()
+{
+    $args = array(
+        'labels' => array(
+            'name' => 'Brands',
+            'singular_name' => 'Brand',
+        ),
+        'public' => true,
+        'hierarchical' => true,
+    );
+    register_taxonomy('brands', array('cars'), $args);
+}
+add_action('init', 'my_first_taxonomy');
