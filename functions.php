@@ -109,3 +109,47 @@ function my_first_taxonomy()
     register_taxonomy('brands', array('cars'), $args);
 }
 add_action('init', 'my_first_taxonomy');
+
+
+add_action('wp_ajax_enquiry', 'enquiry_form');
+add_action('wp_ajax_nopriv_enquiry', 'enquiry_form');
+function enquiry_form()
+{
+    $formdata = [];
+
+    wp_parse_str($_POST['enquiry'], $formdata);
+
+
+    // Admin email
+    $admin_email = get_option('admin_email');
+
+    // Email headers
+    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+    $headers[] = 'Form' . $admin_email;
+    $headers[] = 'Reply-to' . $formdata['email'];
+
+    //Who are we sending the email to?
+    $send_to = $admin_email;
+
+    // Subjefct
+    $subject = "Enquiry from" . $formdata['fname'] . " " . $formdata['lname'];
+
+    // Message
+    $message = "";
+
+    foreach ($formdata as $index => $field) {
+        $message .= $field . $index . '<br/>';
+    }
+
+    try {
+        if (wp_mail($send_to, $subject, $message, $headers)) {
+            wp_send_json_success('Email Sent');
+        } else {
+            wp_send_json_error('Email Error');
+        }
+    } catch (Exception $e) {
+        wp_send_json_error($e->getMessage());
+    }
+
+    wp_send_json_success($formdata['fname']);
+}
