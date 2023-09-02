@@ -115,6 +115,13 @@ add_action('wp_ajax_enquiry', 'enquiry_form');
 add_action('wp_ajax_nopriv_enquiry', 'enquiry_form');
 function enquiry_form()
 {
+
+    if (!wp_verify_nonce($_POST['nonce'], 'ajax-nonce')) {
+
+        wp_send_json('Nonce is incorrect', 401);
+        die();
+    }
+
     $formdata = [];
 
     wp_parse_str($_POST['enquiry'], $formdata);
@@ -152,4 +159,28 @@ function enquiry_form()
     }
 
     wp_send_json_success($formdata['fname']);
+}
+
+
+/**
+ * Register Custom Navigation Walker
+ */
+function register_navwalker()
+{
+    require_once get_template_directory() . '/class-wp-bootstrap-navwalker.php';
+}
+add_action('after_setup_theme', 'register_navwalker');
+
+
+add_action('phpmailer_init', 'custom_mailer');
+function custom_mailer(PHPMailer $phpmailer)
+{
+    $phpmailer->Setfrom();
+    $phpmailer->Host = 'email-smtp.us-west-2.amazon.com';
+    $phpmailer->Port = 587;
+    $phpmailer->SMTPAuth = true;
+    $phpmailer->SMTPSecure = 'tls';
+    $phpmailer->Username = 'username';
+    $phpmailer->Password = 'password';
+    $phpmailer->IsSMTP();
 }

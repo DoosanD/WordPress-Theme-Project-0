@@ -41,6 +41,7 @@
             var formdata = new FormData;
 
             formdata.append('action', 'enquiry');
+            formdata.append('nonce', '<?php echo wp_create_nonce('ajax-nonce'); ?>');
             formdata.append('enquiry', form);
 
             $.ajax(endpoint, {
@@ -54,7 +55,7 @@
                     return '<p>Thanks</p>'
                 },
                 error: function(res) {
-                    alert(res.data);
+                    alert(res.responseJSON.data);
                 }
 
             })
