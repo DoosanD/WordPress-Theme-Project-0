@@ -184,3 +184,19 @@ function custom_mailer(PHPMailer $phpmailer)
     $phpmailer->Password = 'password';
     $phpmailer->IsSMTP();
 }
+
+
+function my_shortcode($atts, $content = null, $tag = '')
+{
+
+    print_r($atts);
+
+    set_query_var('attributes', $atts);
+
+    echo $tag;
+    ob_start();
+    get_template_part('include/latest', 'cars');
+    return ob_get_clean();
+}
+add_shortcode('latest_cars', 'my_shortcode');
+// [latest_cars colour="black"]
